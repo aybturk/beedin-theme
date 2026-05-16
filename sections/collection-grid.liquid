@@ -9,6 +9,26 @@
 
 <section class="collection-grid" id="collection-grid-{{ section.id }}">
 
+  <!-- Category Navigation Strip -->
+  {%- if section.settings.show_category_nav -%}
+  <nav class="category-nav" aria-label="Shop by category">
+    <ul class="category-nav__list" role="list">
+      {%- assign category_links = 'Mirrors,/collections/mirror|Wall Decor,/collections/wall-decor|Lighting,/collections/lighting|Table Decor,/collections/table-decor|Wooden Collection,/collections/wooden-collection|New Arrivals,/collections/new-arrivals' | split: '|' -%}
+      {%- for item in category_links -%}
+        {%- assign parts = item | split: ',' -%}
+        {%- assign item_handle = parts[1] | split: '/collections/' | last -%}
+        {%- assign current_handle = collection.handle -%}
+        <li class="category-nav__item">
+          <a
+            href="{{ parts[1] }}"
+            class="category-nav__link{% if current_handle == item_handle %} is-active{% endif %}"
+          >{{ parts[0] }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+  {%- endif -%}
+
   <!-- Collection Header -->
   <div class="collection-grid__header">
     <div class="collection-grid__header-inner">
@@ -181,6 +201,12 @@
       "max": 48,
       "step": 4,
       "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category_nav",
+      "label": "Show category navigation strip",
+      "default": true
     },
     {
       "type": "checkbox",

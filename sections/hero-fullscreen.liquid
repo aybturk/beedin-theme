@@ -32,7 +32,13 @@
         height="{{ section.settings.image.height }}"
       >
     {%- else -%}
-      <div class="hero-fullscreen__placeholder"></div>
+      <img
+        src="{{ 'hero-default.png' | asset_url }}"
+        alt="{{ section.settings.heading | escape | default: shop.name }}"
+        loading="eager"
+        fetchpriority="high"
+        class="hero-fullscreen__image"
+      >
     {%- endif -%}
     <div class="hero-fullscreen__overlay" style="--overlay-opacity: {{ overlay_opacity }};"></div>
   </div>
