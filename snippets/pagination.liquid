@@ -1,0 +1,130 @@
+{%- liquid
+  comment
+    Usage: {% render 'pagination', paginate: paginate %}
+    Renders: Previous / page numbers / Next
+  endcomment
+-%}
+
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.current_page' | t: current: paginate.current_page, total: paginate.pages }}">
+    <ul class="pagination__list" role="list">
+
+      {%- if paginate.previous -%}
+        <li class="pagination__item">
+          <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="{{ 'general.pagination.previous' | t }}">
+            {% render 'icon', name: 'arrow-left' %}
+            <span>{{ 'general.pagination.previous' | t }}</span>
+          </a>
+        </li>
+      {%- else -%}
+        <li class="pagination__item">
+          <span class="pagination__link pagination__link--prev pagination__link--disabled" aria-hidden="true">
+            {% render 'icon', name: 'arrow-left' %}
+            <span>{{ 'general.pagination.previous' | t }}</span>
+          </span>
+        </li>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        <li class="pagination__item">
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="pagination__link pagination__link--page" aria-label="Page {{ part.title }}">
+              {{ part.title }}
+            </a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="pagination__link pagination__link--page pagination__link--current" aria-current="page" aria-label="Page {{ part.title }}, current page">
+              {{ part.title }}
+            </span>
+          {%- else -%}
+            <span class="pagination__ellipsis">{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <li class="pagination__item">
+          <a href="{{ paginate.next.url }}" class="pagination__link pagination__link--next" aria-label="{{ 'general.pagination.next' | t }}">
+            <span>{{ 'general.pagination.next' | t }}</span>
+            {% render 'icon', name: 'arrow-right' %}
+          </a>
+        </li>
+      {%- else -%}
+        <li class="pagination__item">
+          <span class="pagination__link pagination__link--next pagination__link--disabled" aria-hidden="true">
+            <span>{{ 'general.pagination.next' | t }}</span>
+            {% render 'icon', name: 'arrow-right' %}
+          </span>
+        </li>
+      {%- endif -%}
+
+    </ul>
+  </nav>
+{%- endif -%}
+
+<style>
+  .pagination {
+    padding: var(--space-7) 0;
+  }
+
+  .pagination__list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+  }
+
+  .pagination__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: border-color var(--duration-fast), background var(--duration-fast), color var(--duration-fast);
+  }
+
+  .pagination__link:hover:not(.pagination__link--disabled):not(.pagination__link--current) {
+    border-color: var(--color-border);
+    background: var(--color-bg-alt);
+  }
+
+  .pagination__link--current {
+    border-color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-text-inverse);
+    cursor: default;
+  }
+
+  .pagination__link--disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .pagination__link--prev,
+  .pagination__link--next {
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .pagination__link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pagination__ellipsis {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+  }
+</style>

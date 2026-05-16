@@ -1,0 +1,136 @@
+<section class="brand-statement" id="brand-statement-{{ section.id }}">
+  <div class="brand-statement__inner">
+    {%- if section.settings.label != blank -%}
+      <p class="brand-statement__label reveal">{{ section.settings.label }}</p>
+    {%- endif -%}
+
+    <blockquote class="brand-statement__statement reveal">
+      <p class="brand-statement__text">{{ section.settings.statement | default: 'sections.brand_statement.default_statement' | t }}</p>
+      {%- if section.settings.attribution != blank -%}
+        <footer class="brand-statement__attribution">
+          <cite>{{ section.settings.attribution }}</cite>
+        </footer>
+      {%- endif -%}
+    </blockquote>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="brand-statement__cta reveal">
+        <a href="{{ section.settings.button_url | default: '/collections/all' }}" class="btn btn--secondary">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .brand-statement {
+    padding: var(--section-gap) var(--page-gutter);
+    background: {% if section.settings.background == 'alt' %}var(--color-bg-alt){% elsif section.settings.background == 'dark' %}var(--color-bg-dark){% else %}var(--color-bg){% endif %};
+  }
+
+  .brand-statement__inner {
+    max-width: var(--prose-max);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .brand-statement__label {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .brand-statement__statement {
+    margin: 0;
+  }
+
+  .brand-statement__text {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+    color: {% if section.settings.background == 'dark' %}var(--color-text-inverse){% else %}var(--color-text){% endif %};
+    margin: 0 0 var(--space-6) 0;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .brand-statement__text {
+      font-size: var(--type-lg);
+    }
+  }
+
+  .brand-statement__attribution {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    font-style: normal;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .brand-statement__attribution cite {
+    font-style: normal;
+  }
+
+  .brand-statement__cta {
+    margin-top: var(--space-8);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Brand Statement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (small text above statement)",
+      "placeholder": "Our Philosophy"
+    },
+    {
+      "type": "text",
+      "id": "statement",
+      "label": "Statement",
+      "default": "We believe every home deserves the warmth of thoughtfully crafted objects."
+    },
+    {
+      "type": "text",
+      "id": "attribution",
+      "label": "Attribution (optional)",
+      "placeholder": "— The Beedin Studio"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default (warm white)" },
+        { "value": "alt", "label": "Alt (slightly darker)" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label (optional)"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Statement",
+      "category": "Editorial"
+    }
+  ]
+}
+{% endschema %}

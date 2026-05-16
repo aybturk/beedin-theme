@@ -1,0 +1,87 @@
+<!-- Cart Drawer — rendered in layout/theme.liquid outside main content -->
+<div class="cart-drawer-overlay" id="cart-drawer-overlay" aria-hidden="true"></div>
+
+<div
+  class="cart-drawer"
+  id="cart-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'sections.cart_drawer.title' | t }}"
+  aria-hidden="true"
+>
+
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">{{ section.settings.title | default: 'sections.cart_drawer.title' | t }}</h2>
+    <button
+      class="cart-drawer__close"
+      id="cart-drawer-close"
+      aria-label="{{ 'accessibility.close_modal' | t }}"
+      type="button"
+    >
+      {% render 'icon', name: 'close' %}
+    </button>
+  </div>
+
+  <div class="cart-drawer__body" id="cart-drawer-body">
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-drawer__empty" id="cart-drawer-empty">
+        <div class="cart-drawer__empty-icon">{% render 'icon', name: 'cart' %}</div>
+        <p class="cart-drawer__empty-title">{{ section.settings.empty_title | default: 'sections.cart_drawer.empty' | t }}</p>
+        <p class="cart-drawer__empty-message">{{ section.settings.empty_message | default: 'sections.cart_drawer.empty_message' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary cart-drawer__continue-btn" id="cart-drawer-continue">
+          {{ 'sections.cart_drawer.continue_shopping' | t }}
+        </a>
+      </div>
+    {%- else -%}
+      <div class="cart-drawer__items" id="cart-drawer-items">
+        {%- for item in cart.items -%}
+          {% render 'cart-line-item', item: item %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart-drawer__footer" id="cart-drawer-footer">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">{{ 'general.cart.subtotal' | t }}</span>
+        <span class="cart-drawer__subtotal-price">{{ cart.total_price | money }}</span>
+      </div>
+      <p class="cart-drawer__taxes-note">{{ 'general.cart.taxes_and_shipping' | t }}</p>
+      <a href="{{ routes.checkout_url }}" class="btn btn--primary cart-drawer__checkout-btn">
+        {{ 'sections.cart_drawer.checkout' | t }}
+      </a>
+      <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">
+        View Cart
+      </a>
+    </div>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Drawer title",
+      "default": "Your Cart"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty cart heading",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Empty cart message",
+      "default": "Discover our curated collection of home decor."
+    }
+  ],
+  "presets": []
+}
+{% endschema %}

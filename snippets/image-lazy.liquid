@@ -1,0 +1,53 @@
+{%- liquid
+  comment
+    Usage:
+      {% render 'image-lazy', image: image, alt: 'Alt text', class: 'my-class', sizes: '50vw', aspect_ratio: '4/5' %}
+
+    Parameters:
+      image        — required. Shopify image object.
+      alt          — optional. Alt text (falls back to image.alt).
+      class        — optional. CSS classes for the <img>.
+      wrapper_class — optional. CSS class for the wrapper div.
+      sizes        — optional. sizes attribute. Default: '100vw'.
+      aspect_ratio — optional. CSS aspect-ratio value, e.g. '4/5', '16/9'. If set, wraps with div.
+      loading      — optional. 'lazy' or 'eager'. Default: 'lazy'.
+      fetchpriority — optional. 'high', 'low', or 'auto'. Default: 'auto'.
+  endcomment
+
+  assign img_alt = alt | default: image.alt | default: ''
+  assign img_sizes = sizes | default: '100vw'
+  assign img_loading = loading | default: 'lazy'
+  assign img_fetchpriority = fetchpriority | default: 'auto'
+-%}
+
+{%- if image != blank -%}
+  {%- if aspect_ratio != blank -%}
+    <div class="image-lazy-wrapper {{ wrapper_class }}" style="aspect-ratio: {{ aspect_ratio }}; overflow: hidden; position: relative;">
+  {%- endif -%}
+
+  <img
+    src="{{ image | image_url: width: 800 }}"
+    srcset="
+      {{ image | image_url: width: 400 }} 400w,
+      {{ image | image_url: width: 600 }} 600w,
+      {{ image | image_url: width: 800 }} 800w,
+      {{ image | image_url: width: 1200 }} 1200w,
+      {{ image | image_url: width: 1600 }} 1600w
+    "
+    sizes="{{ img_sizes }}"
+    alt="{{ img_alt | escape }}"
+    loading="{{ img_loading }}"
+    fetchpriority="{{ img_fetchpriority }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    class="image-lazy {{ class }}{% if aspect_ratio != blank %} image-lazy--cover{% endif %}"
+  >
+
+  {%- if aspect_ratio != blank -%}
+    </div>
+  {%- endif -%}
+{%- else -%}
+  {%- if aspect_ratio != blank -%}
+    <div class="image-lazy-wrapper image-lazy-wrapper--placeholder {{ wrapper_class }}" style="aspect-ratio: {{ aspect_ratio }};"></div>
+  {%- endif -%}
+{%- endif -%}

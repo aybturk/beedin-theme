@@ -1,0 +1,83 @@
+{%- liquid
+  comment
+    Usage:
+      {% render 'product-card', product: product, show_secondary_image: true %}
+    Parameters:
+      product           — required. The product object.
+      show_secondary_image — optional. Boolean. Default: true.
+      lazy              — optional. Boolean. Whether to lazy-load. Default: true.
+  endcomment
+
+  assign show_secondary_image = show_secondary_image | default: true
+  assign has_secondary = false
+  if show_secondary_image and product.images[1] != blank
+    assign has_secondary = true
+  endif
+  assign lazy = lazy | default: true
+-%}
+
+<div class="product-card" data-product-id="{{ product.id }}">
+  <a href="{{ product.url }}" class="product-card__link" aria-label="{{ product.title | escape }}">
+
+    <!-- Image Wrapper -->
+    <div class="product-card__image-wrapper">
+
+      <!-- Badge(s) -->
+      {% render 'product-badge', product: product %}
+
+      <!-- Primary Image -->
+      {%- if product.featured_image != blank -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          srcset="
+            {{ product.featured_image | image_url: width: 400 }} 400w,
+            {{ product.featured_image | image_url: width: 600 }} 600w,
+            {{ product.featured_image | image_url: width: 800 }} 800w
+          "
+          sizes="(max-width: 480px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          loading="{% if lazy %}lazy{% else %}eager{% endif %}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          class="product-card__image product-card__image--primary"
+        >
+      {%- else -%}
+        <div class="product-card__image-placeholder product-card__image--primary"></div>
+      {%- endif -%}
+
+      <!-- Secondary Image (hover) -->
+      {%- if has_secondary -%}
+        <img
+          src="{{ product.images[1] | image_url: width: 600 }}"
+          srcset="
+            {{ product.images[1] | image_url: width: 400 }} 400w,
+            {{ product.images[1] | image_url: width: 600 }} 600w,
+            {{ product.images[1] | image_url: width: 800 }} 800w
+          "
+          sizes="(max-width: 480px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          alt="{{ product.images[1].alt | default: product.title | escape }}"
+          loading="lazy"
+          width="{{ product.images[1].width }}"
+          height="{{ product.images[1].height }}"
+          class="product-card__image product-card__image--secondary"
+          aria-hidden="true"
+        >
+      {%- endif -%}
+
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-card__info">
+      {%- if product.vendor != blank -%}
+        <p class="product-card__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+
+      <h3 class="product-card__title">{{ product.title }}</h3>
+
+      <div class="product-card__price">
+        {% render 'price', product: product %}
+      </div>
+    </div>
+
+  </a>
+</div>

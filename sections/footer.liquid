@@ -1,0 +1,434 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+
+    <!-- Column 1: Brand + About -->
+    <div class="site-footer__brand">
+      <a href="{{ routes.root_url }}" class="site-footer__logo-link">
+        {%- if settings.logo != blank -%}
+          <img
+            src="{{ settings.logo | image_url: width: 120 }}"
+            alt="{{ settings.logo.alt | default: shop.name }}"
+            width="120"
+            loading="lazy"
+            class="site-footer__logo"
+          >
+        {%- else -%}
+          <span class="site-footer__logo-text">{{ settings.logo_text | default: shop.name | upcase }}</span>
+        {%- endif -%}
+      </a>
+      {%- if section.settings.tagline != blank -%}
+        <p class="site-footer__tagline">{{ section.settings.tagline }}</p>
+      {%- else -%}
+        <p class="site-footer__tagline">Warmth in every detail. Premium home decor crafted for modern living.</p>
+      {%- endif -%}
+
+      {%- if settings.store_email != blank -%}
+        <a href="mailto:{{ settings.store_email }}" class="site-footer__email">{{ settings.store_email }}</a>
+      {%- endif -%}
+    </div>
+
+    <!-- Column 2: Navigation Links -->
+    <div class="site-footer__nav">
+      {%- if section.settings.footer_menu_1 != blank -%}
+        <div class="site-footer__nav-group">
+          {%- if section.settings.footer_menu_1_title != blank -%}
+            <h3 class="site-footer__nav-heading">{{ section.settings.footer_menu_1_title }}</h3>
+          {%- else -%}
+            <h3 class="site-footer__nav-heading">Shop</h3>
+          {%- endif -%}
+          <ul class="site-footer__nav-list" role="list">
+            {%- for link in linklists[section.settings.footer_menu_1].links -%}
+              <li><a href="{{ link.url }}" class="site-footer__nav-link">{{ link.title }}</a></li>
+            {%- else -%}
+              <li><a href="/collections/mirrors" class="site-footer__nav-link">Mirrors</a></li>
+              <li><a href="/collections/wall-decor" class="site-footer__nav-link">Wall Decor</a></li>
+              <li><a href="/collections/lighting" class="site-footer__nav-link">Lighting</a></li>
+              <li><a href="/collections/table-decor" class="site-footer__nav-link">Table Decor</a></li>
+              <li><a href="/collections/wooden-collection" class="site-footer__nav-link">Wooden Collection</a></li>
+              <li><a href="/collections/new-arrivals" class="site-footer__nav-link">New Arrivals</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- else -%}
+        <div class="site-footer__nav-group">
+          <h3 class="site-footer__nav-heading">Shop</h3>
+          <ul class="site-footer__nav-list" role="list">
+            <li><a href="/collections/mirrors" class="site-footer__nav-link">Mirrors</a></li>
+            <li><a href="/collections/wall-decor" class="site-footer__nav-link">Wall Decor</a></li>
+            <li><a href="/collections/lighting" class="site-footer__nav-link">Lighting</a></li>
+            <li><a href="/collections/table-decor" class="site-footer__nav-link">Table Decor</a></li>
+            <li><a href="/collections/wooden-collection" class="site-footer__nav-link">Wooden Collection</a></li>
+            <li><a href="/collections/new-arrivals" class="site-footer__nav-link">New Arrivals</a></li>
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.footer_menu_2 != blank -%}
+        <div class="site-footer__nav-group">
+          {%- if section.settings.footer_menu_2_title != blank -%}
+            <h3 class="site-footer__nav-heading">{{ section.settings.footer_menu_2_title }}</h3>
+          {%- else -%}
+            <h3 class="site-footer__nav-heading">Info</h3>
+          {%- endif -%}
+          <ul class="site-footer__nav-list" role="list">
+            {%- for link in linklists[section.settings.footer_menu_2].links -%}
+              <li><a href="{{ link.url }}" class="site-footer__nav-link">{{ link.title }}</a></li>
+            {%- else -%}
+              <li><a href="/pages/about" class="site-footer__nav-link">About Us</a></li>
+              <li><a href="/pages/contact" class="site-footer__nav-link">Contact</a></li>
+              <li><a href="/policies/shipping-policy" class="site-footer__nav-link">Shipping</a></li>
+              <li><a href="/policies/refund-policy" class="site-footer__nav-link">Returns</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- else -%}
+        <div class="site-footer__nav-group">
+          <h3 class="site-footer__nav-heading">Info</h3>
+          <ul class="site-footer__nav-list" role="list">
+            <li><a href="/pages/about" class="site-footer__nav-link">About Us</a></li>
+            <li><a href="/pages/contact" class="site-footer__nav-link">Contact</a></li>
+            <li><a href="/policies/shipping-policy" class="site-footer__nav-link">Shipping</a></li>
+            <li><a href="/policies/refund-policy" class="site-footer__nav-link">Returns</a></li>
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Column 3: Newsletter + Social -->
+    <div class="site-footer__subscribe">
+      <h3 class="site-footer__nav-heading">{{ 'sections.footer.newsletter' | t }}</h3>
+      <p class="site-footer__subscribe-text">New arrivals, styling inspiration, and exclusive offers.</p>
+      {% form 'customer', id: 'footer-newsletter-form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="site-footer__subscribe-success">{{ 'sections.newsletter.success_message' | t }}</p>
+        {%- else -%}
+          <div class="site-footer__subscribe-form">
+            <input
+              type="email"
+              name="contact[email]"
+              id="footer-email"
+              placeholder="{{ 'sections.footer.newsletter_placeholder' | t }}"
+              required
+              autocomplete="email"
+              class="site-footer__subscribe-input"
+            >
+            <button type="submit" class="btn btn--primary site-footer__subscribe-btn">
+              {{ 'sections.footer.newsletter_submit' | t }}
+            </button>
+          </div>
+        {%- endif -%}
+      {% endform %}
+
+      <!-- Social Icons -->
+      <div class="site-footer__social">
+        {%- if settings.social_instagram != blank -%}
+          <a href="{{ settings.social_instagram }}" class="site-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            {% render 'icon', name: 'instagram' %}
+          </a>
+        {%- endif -%}
+        {%- if settings.social_pinterest != blank -%}
+          <a href="{{ settings.social_pinterest }}" class="site-footer__social-link" aria-label="Pinterest" target="_blank" rel="noopener noreferrer">
+            {% render 'icon', name: 'pinterest' %}
+          </a>
+        {%- endif -%}
+        {%- if settings.social_facebook != blank -%}
+          <a href="{{ settings.social_facebook }}" class="site-footer__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+            {% render 'icon', name: 'facebook' %}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="site-footer__bottom">
+    <div class="site-footer__bottom-inner">
+      <p class="site-footer__copyright">
+        {%- assign copyright_text = section.settings.copyright_text | default: 'sections.footer.copyright' | t: year: 'now' | date: '%Y', shop_name: shop.name -%}
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.copyright_text | default: 'All rights reserved.' }}
+      </p>
+      <div class="site-footer__legal-links">
+        <a href="{{ shop.privacy_policy.url }}" class="site-footer__legal-link">Privacy Policy</a>
+        <a href="{{ shop.terms_of_service.url }}" class="site-footer__legal-link">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg-dark);
+    color: var(--color-text-inverse);
+    padding-top: var(--space-10);
+  }
+
+  .site-footer__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--page-gutter);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-9);
+    padding-bottom: var(--space-9);
+    border-bottom: 1px solid var(--color-border-dark);
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-7);
+    }
+  }
+
+  .site-footer__logo-link {
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: var(--space-5);
+  }
+
+  .site-footer__logo-text {
+    font-family: var(--font-display);
+    font-size: var(--type-lg);
+    font-weight: 300;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-inverse);
+  }
+
+  .site-footer__tagline {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: rgba(247, 244, 240, 0.6);
+    line-height: var(--leading-loose);
+    margin: 0 0 var(--space-4) 0;
+    max-width: 280px;
+  }
+
+  .site-footer__email {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+  }
+
+  .site-footer__email:hover {
+    color: var(--color-text-inverse);
+  }
+
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-7);
+  }
+
+  @media (max-width: 480px) {
+    .site-footer__nav {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+    }
+  }
+
+  .site-footer__nav-heading {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-inverse);
+    margin: 0 0 var(--space-5) 0;
+  }
+
+  .site-footer__nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .site-footer__nav-link {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: rgba(247, 244, 240, 0.65);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+    display: inline-block;
+  }
+
+  .site-footer__nav-link:hover {
+    color: var(--color-text-inverse);
+  }
+
+  .site-footer__subscribe-text {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: rgba(247, 244, 240, 0.6);
+    margin: 0 0 var(--space-5) 0;
+    line-height: var(--leading-normal);
+  }
+
+  .site-footer__subscribe-form {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  @media (max-width: 480px) {
+    .site-footer__subscribe-form {
+      flex-direction: column;
+    }
+  }
+
+  .site-footer__subscribe-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-text-inverse);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    padding: var(--space-3) var(--space-4);
+    outline: none;
+    transition: border-color var(--duration-fast);
+    min-width: 0;
+  }
+
+  .site-footer__subscribe-input::placeholder {
+    color: rgba(247, 244, 240, 0.4);
+  }
+
+  .site-footer__subscribe-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .site-footer__subscribe-success {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-accent);
+    margin-bottom: var(--space-6);
+  }
+
+  .site-footer__subscribe-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .site-footer__social {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+
+  .site-footer__social-link {
+    color: rgba(247, 244, 240, 0.6);
+    transition: color var(--duration-fast);
+    display: flex;
+    align-items: center;
+  }
+
+  .site-footer__social-link:hover {
+    color: var(--color-text-inverse);
+  }
+
+  .site-footer__social-link svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .site-footer__bottom {
+    padding: var(--space-5) var(--page-gutter);
+  }
+
+  .site-footer__bottom-inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .site-footer__copyright {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: rgba(247, 244, 240, 0.4);
+    margin: 0;
+  }
+
+  .site-footer__legal-links {
+    display: flex;
+    gap: var(--space-5);
+  }
+
+  .site-footer__legal-link {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: rgba(247, 244, 240, 0.4);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+  }
+
+  .site-footer__legal-link:hover {
+    color: rgba(247, 244, 240, 0.8);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Warmth in every detail. Premium home decor crafted for modern living."
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_1",
+      "label": "Menu 1 (Shop links)"
+    },
+    {
+      "type": "text",
+      "id": "footer_menu_1_title",
+      "label": "Menu 1 title",
+      "default": "Shop"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_2",
+      "label": "Menu 2 (Info links)"
+    },
+    {
+      "type": "text",
+      "id": "footer_menu_2_title",
+      "label": "Menu 2 title",
+      "default": "Info"
+    },
+    {
+      "type": "header",
+      "content": "Legal"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright suffix",
+      "default": "All rights reserved."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "category": "Footer"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,158 @@
+{%- if section.settings.message != blank -%}
+<div
+  class="announcement-bar{% if section.settings.style == 'dark' %} announcement-bar--dark{% endif %}"
+  id="announcement-bar"
+  role="region"
+  aria-label="Announcement"
+>
+  <div class="announcement-bar__inner">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}" class="announcement-bar__message">
+        {{ section.settings.message }}
+      </a>
+    {%- else -%}
+      <p class="announcement-bar__message">{{ section.settings.message }}</p>
+    {%- endif -%}
+  </div>
+
+  <button
+    class="announcement-bar__close"
+    id="announcement-bar-close"
+    aria-label="{{ 'accessibility.dismiss_announcement' | t }}"
+    type="button"
+  >
+    {% render 'icon', name: 'close' %}
+  </button>
+</div>
+{%- endif -%}
+
+<style>
+  .announcement-bar {
+    position: relative;
+    background: var(--color-bg-alt);
+    color: var(--color-text-muted);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: height var(--duration-base) var(--ease-out-expo), opacity var(--duration-base) var(--ease-out-expo);
+  }
+
+  .announcement-bar--dark {
+    background: var(--color-bg-dark);
+    color: var(--color-text-inverse);
+  }
+
+  .announcement-bar.is-dismissed {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .announcement-bar__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0 var(--space-8);
+  }
+
+  .announcement-bar__message {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.announcement-bar__message:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .announcement-bar__close {
+    position: absolute;
+    right: var(--space-5);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+    padding: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--duration-fast);
+  }
+
+  .announcement-bar__close:hover {
+    opacity: 1;
+  }
+
+  .announcement-bar__close svg {
+    width: 14px;
+    height: 14px;
+  }
+</style>
+
+<script>
+  (function() {
+    var bar = document.getElementById('announcement-bar');
+    var btn = document.getElementById('announcement-bar-close');
+    if (!bar || !btn) return;
+
+    var key = 'beedin-announcement-{{ section.id }}';
+    if (sessionStorage.getItem(key)) {
+      bar.style.display = 'none';
+      return;
+    }
+
+    btn.addEventListener('click', function() {
+      bar.classList.add('is-dismissed');
+      setTimeout(function() {
+        bar.style.display = 'none';
+      }, 350);
+      sessionStorage.setItem(key, '1');
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Free shipping on orders over ₺500 · Use code WELCOME10 for 10% off"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (optional)"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "light"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar",
+      "category": "Header"
+    }
+  ]
+}
+{% endschema %}

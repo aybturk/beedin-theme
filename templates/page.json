@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "page-content": {
+      "type": "rich-text",
+      "settings": {}
+    }
+  },
+  "order": ["page-content"]
+}

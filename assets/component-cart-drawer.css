@@ -1,0 +1,276 @@
+/* ============================================================
+   BEEDIN THEME — Cart Drawer Component
+   ============================================================ */
+
+
+/* ============================================================
+   BACKDROP OVERLAY
+   ============================================================ */
+
+.cart-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.45);
+  z-index: 399;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-base) var(--ease-out-expo),
+    visibility var(--duration-base);
+}
+
+.cart-drawer-open .cart-drawer-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* ============================================================
+   DRAWER PANEL
+   ============================================================ */
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--cart-drawer-width);
+  max-width: 100vw;
+  background: var(--color-bg);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.cart-drawer-open .cart-drawer {
+  transform: translateX(0);
+}
+
+@media (max-width: 480px) {
+  .cart-drawer {
+    width: 100%;
+  }
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.cart-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  height: var(--header-height);
+}
+
+.cart-drawer__title {
+  font-family: var(--font-body);
+  font-size: var(--type-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.cart-drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: var(--space-2);
+  transition: color var(--duration-fast);
+}
+
+.cart-drawer__close:hover {
+  color: var(--color-text);
+}
+
+.cart-drawer__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* ============================================================
+   BODY (SCROLLABLE ITEMS)
+   ============================================================ */
+
+.cart-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+  padding: 0 var(--space-6);
+}
+
+.cart-drawer__body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cart-drawer__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cart-drawer__body::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.cart-drawer__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-11) var(--space-5);
+  height: 100%;
+  min-height: 400px;
+}
+
+.cart-drawer__empty-icon {
+  color: var(--color-border);
+  margin-bottom: var(--space-5);
+}
+
+.cart-drawer__empty-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.cart-drawer__empty-title {
+  font-family: var(--font-display);
+  font-size: var(--type-lg);
+  font-weight: 300;
+  color: var(--color-text);
+  margin: 0 0 var(--space-3) 0;
+  letter-spacing: var(--tracking-tight);
+}
+
+.cart-drawer__empty-message {
+  font-family: var(--font-body);
+  font-size: var(--type-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-8) 0;
+  line-height: var(--leading-loose);
+  max-width: 260px;
+}
+
+.cart-drawer__continue-btn {
+  min-width: 200px;
+}
+
+
+/* ============================================================
+   LINE ITEMS
+   ============================================================ */
+
+.cart-drawer__items {
+  padding: var(--space-2) 0;
+}
+
+/* Cart items inside drawer get a slightly more compact layout */
+.cart-drawer__items .cart-item {
+  grid-template-columns: 80px 1fr auto;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+}
+
+.cart-drawer__items .cart-item__media {
+  width: 80px;
+}
+
+/* Hide desktop price in drawer — shown inline with mobile price */
+.cart-drawer__items .cart-item__price-desktop {
+  display: none;
+}
+
+.cart-drawer__items .cart-item__price-mobile {
+  display: block;
+  margin-top: var(--space-2);
+}
+
+
+/* ============================================================
+   FOOTER (subtotal + checkout)
+   ============================================================ */
+
+.cart-drawer__footer {
+  flex-shrink: 0;
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.cart-drawer__subtotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.cart-drawer__subtotal-label {
+  font-family: var(--font-body);
+  font-size: var(--type-sm);
+  color: var(--color-text);
+  font-weight: 400;
+}
+
+.cart-drawer__subtotal-price {
+  font-family: var(--font-body);
+  font-size: var(--type-base);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.cart-drawer__taxes-note {
+  font-family: var(--font-body);
+  font-size: var(--type-xs);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5) 0;
+  line-height: var(--leading-normal);
+}
+
+.cart-drawer__checkout-btn {
+  width: 100%;
+  height: 52px;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+}
+
+.cart-drawer__view-cart {
+  display: block;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--type-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--duration-fast);
+  padding: var(--space-2) 0;
+}
+
+.cart-drawer__view-cart:hover {
+  color: var(--color-text);
+}

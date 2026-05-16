@@ -1,0 +1,307 @@
+<section class="category-tiles" id="category-tiles-{{ section.id }}">
+  {%- if section.settings.heading != blank -%}
+    <div class="category-tiles__header">
+      <h2 class="category-tiles__heading reveal">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="category-tiles__grid">
+    {%- for block in section.blocks -%}
+      <a
+        href="{{ block.settings.url | default: '#' }}"
+        class="category-tile category-tile--{{ forloop.index }}{% if forloop.first %} category-tile--featured{% endif %} reveal"
+        {{ block.shopify_attributes }}
+        style="--delay: {{ forloop.index0 | times: 0.08 }}s"
+      >
+        <div class="category-tile__media">
+          {%- if block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 800 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 500 }} 500w,
+                {{ block.settings.image | image_url: width: 800 }} 800w,
+                {{ block.settings.image | image_url: width: 1200 }} 1200w
+              "
+              sizes="{% if forloop.first %}(max-width: 768px) 100vw, 40vw{% else %}(max-width: 768px) 50vw, 20vw{% endif %}"
+              alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+              loading="lazy"
+              class="category-tile__image"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+            >
+          {%- else -%}
+            <div class="category-tile__placeholder"></div>
+          {%- endif -%}
+          <div class="category-tile__overlay"></div>
+        </div>
+        <div class="category-tile__content">
+          {%- if block.settings.title != blank -%}
+            <h3 class="category-tile__title">{{ block.settings.title }}</h3>
+          {%- endif -%}
+          {%- if block.settings.subtitle != blank -%}
+            <p class="category-tile__subtitle">{{ block.settings.subtitle }}</p>
+          {%- endif -%}
+          <span class="category-tile__link-text">
+            Shop Now
+            {% render 'icon', name: 'arrow-right' %}
+          </span>
+        </div>
+      </a>
+    {%- else -%}
+      <!-- Default placeholder tiles -->
+      {%- assign default_tiles = 'Mirrors,/collections/mirrors|Wall Decor,/collections/wall-decor|Lighting,/collections/lighting|Table Decor,/collections/table-decor|Wooden Collection,/collections/wooden-collection|New Arrivals,/collections/new-arrivals' | split: '|' -%}
+      {%- for item in default_tiles -%}
+        {%- assign parts = item | split: ',' -%}
+        <a href="{{ parts[1] }}" class="category-tile category-tile--{{ forloop.index }}{% if forloop.first %} category-tile--featured{% endif %} reveal">
+          <div class="category-tile__media">
+            <div class="category-tile__placeholder"></div>
+            <div class="category-tile__overlay"></div>
+          </div>
+          <div class="category-tile__content">
+            <h3 class="category-tile__title">{{ parts[0] }}</h3>
+            <span class="category-tile__link-text">
+              Shop Now
+              {% render 'icon', name: 'arrow-right' %}
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .category-tiles {
+    padding: var(--section-gap) 0;
+    background: var(--color-bg);
+  }
+
+  .category-tiles__header {
+    text-align: center;
+    padding: 0 var(--page-gutter);
+    margin-bottom: var(--space-8);
+  }
+
+  .category-tiles__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .category-tiles__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--space-2);
+    padding: 0 var(--page-gutter);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1024px) {
+    .category-tiles__grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .category-tiles__grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .category-tiles__grid {
+      grid-template-columns: 1fr;
+      padding: 0 var(--space-4);
+    }
+  }
+
+  /* Featured tile spans 2 rows */
+  .category-tile--featured {
+    grid-row: 1 / 3;
+  }
+
+  @media (max-width: 768px) {
+    .category-tile--featured {
+      grid-row: auto;
+      grid-column: 1 / -1;
+    }
+  }
+
+  .category-tile {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    background: var(--color-bg-alt);
+    aspect-ratio: 3 / 4;
+  }
+
+  .category-tile--featured {
+    aspect-ratio: 3 / 5;
+  }
+
+  @media (max-width: 768px) {
+    .category-tile--featured {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  .category-tile__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .category-tile__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--duration-crawl) var(--ease-out-expo);
+  }
+
+  .category-tile:hover .category-tile__image {
+    transform: scale(1.05);
+  }
+
+  .category-tile__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-bg-alt) 0%, var(--color-border) 100%);
+  }
+
+  .category-tile__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(28, 25, 23, 0.7) 0%, rgba(28, 25, 23, 0.1) 50%, transparent 100%);
+    transition: opacity var(--duration-base);
+  }
+
+  .category-tile:hover .category-tile__overlay {
+    opacity: 0.8;
+  }
+
+  .category-tile__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-6) var(--space-5);
+    color: var(--color-text-inverse);
+    z-index: 1;
+  }
+
+  .category-tile--featured .category-tile__content {
+    padding: var(--space-8) var(--space-7);
+  }
+
+  .category-tile__title {
+    font-family: var(--font-display);
+    font-size: var(--type-lg);
+    font-weight: 300;
+    margin: 0 0 var(--space-2) 0;
+    line-height: var(--leading-snug);
+  }
+
+  .category-tile--featured .category-tile__title {
+    font-size: var(--type-xl);
+  }
+
+  .category-tile__subtitle {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: rgba(247, 244, 240, 0.75);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .category-tile__link-text {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: rgba(247, 244, 240, 0.85);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: gap var(--duration-fast), color var(--duration-fast);
+  }
+
+  .category-tile__link-text svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--duration-fast);
+  }
+
+  .category-tile:hover .category-tile__link-text {
+    color: var(--color-text-inverse);
+    gap: var(--space-3);
+  }
+
+  .category-tile:hover .category-tile__link-text svg {
+    transform: translateX(3px);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Category Tiles",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "placeholder": "Shop by Category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category Tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Category Name"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle (optional)"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Tiles",
+      "category": "Collections",
+      "blocks": [
+        { "type": "tile", "settings": { "title": "Mirrors" } },
+        { "type": "tile", "settings": { "title": "Wall Decor" } },
+        { "type": "tile", "settings": { "title": "Lighting" } },
+        { "type": "tile", "settings": { "title": "Table Decor" } },
+        { "type": "tile", "settings": { "title": "Wooden Collection" } },
+        { "type": "tile", "settings": { "title": "New Arrivals" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

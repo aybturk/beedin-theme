@@ -1,0 +1,42 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-fullscreen",
+      "disabled": false,
+      "settings": {}
+    },
+    "category-tiles": {
+      "type": "category-tiles",
+      "settings": {}
+    },
+    "featured-new-arrivals": {
+      "type": "featured-collection",
+      "settings": {}
+    },
+    "editorial-banner": {
+      "type": "editorial-banner",
+      "settings": {}
+    },
+    "brand-statement": {
+      "type": "brand-statement",
+      "settings": {}
+    },
+    "social-gallery": {
+      "type": "social-gallery",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "category-tiles",
+    "featured-new-arrivals",
+    "editorial-banner",
+    "brand-statement",
+    "social-gallery",
+    "newsletter"
+  ]
+}

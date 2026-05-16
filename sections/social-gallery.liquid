@@ -1,0 +1,314 @@
+<section class="social-gallery" id="social-gallery-{{ section.id }}">
+  {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+    <div class="social-gallery__header reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="social-gallery__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="social-gallery__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="social-gallery__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      {%- if settings.social_instagram != blank -%}
+        <a href="{{ settings.social_instagram }}" class="social-gallery__instagram-link" target="_blank" rel="noopener noreferrer">
+          {% render 'icon', name: 'instagram' %}
+          <span>{{ section.settings.instagram_handle | default: '@beedin' }}</span>
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="social-gallery__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.image != blank -%}
+          <div class="social-gallery__item reveal" style="--delay: {{ forloop.index0 | times: 0.05 }}s" {{ block.shopify_attributes }}>
+            {%- if block.settings.link_url != blank -%}
+              <a href="{{ block.settings.link_url }}" class="social-gallery__item-link" {% unless block.settings.link_url contains shop.url %}target="_blank" rel="noopener noreferrer"{% endunless %}>
+            {%- endif -%}
+
+            <div class="social-gallery__item-media">
+              <img
+                src="{{ block.settings.image | image_url: width: 600 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 400 }} 400w,
+                  {{ block.settings.image | image_url: width: 600 }} 600w,
+                  {{ block.settings.image | image_url: width: 800 }} 800w
+                "
+                sizes="(max-width: 480px) 50vw, (max-width: 1024px) 25vw, 200px"
+                alt="{{ block.settings.image.alt | default: block.settings.link_text | default: 'Gallery image' | escape }}"
+                loading="lazy"
+                class="social-gallery__item-image"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+              >
+
+              {%- if block.settings.link_text != blank or block.settings.product != blank -%}
+                <div class="social-gallery__item-overlay">
+                  {%- if block.settings.product != blank -%}
+                    {%- assign linked_product = all_products[block.settings.product] -%}
+                    {%- if linked_product != blank -%}
+                      <span class="social-gallery__item-label">{{ linked_product.title }}</span>
+                    {%- endif -%}
+                  {%- elsif block.settings.link_text != blank -%}
+                    <span class="social-gallery__item-label">{{ block.settings.link_text }}</span>
+                  {%- endif -%}
+                  {% render 'icon', name: 'arrow-right' %}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.link_url != blank -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <!-- Empty state for editor -->
+    <div class="social-gallery__empty">
+      <p>Add images in the section settings to build your gallery.</p>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .social-gallery {
+    padding: var(--section-gap) 0;
+    background: var(--color-bg-alt);
+    overflow: hidden;
+  }
+
+  .social-gallery__header {
+    text-align: center;
+    padding: 0 var(--page-gutter);
+    margin-bottom: var(--space-8);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .social-gallery__eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .social-gallery__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .social-gallery__subheading {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-5) 0;
+    line-height: var(--leading-loose);
+  }
+
+  .social-gallery__instagram-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+    margin-bottom: var(--space-8);
+  }
+
+  .social-gallery__instagram-link:hover {
+    color: var(--color-text);
+  }
+
+  .social-gallery__instagram-link svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .social-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 1fr;
+    gap: var(--space-2);
+    padding: 0 var(--page-gutter);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1024px) {
+    .social-gallery__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .social-gallery__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .social-gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-1);
+      padding: 0 var(--space-3);
+    }
+  }
+
+  .social-gallery__item {
+    overflow: hidden;
+  }
+
+  .social-gallery__item-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .social-gallery__item-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+
+  .social-gallery__item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--duration-crawl) var(--ease-out-expo);
+  }
+
+  .social-gallery__item:hover .social-gallery__item-image {
+    transform: scale(1.06);
+  }
+
+  .social-gallery__item-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 25, 23, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-in-out);
+    color: var(--color-text-inverse);
+    padding: var(--space-4);
+    text-align: center;
+  }
+
+  .social-gallery__item:hover .social-gallery__item-overlay {
+    opacity: 1;
+  }
+
+  .social-gallery__item-overlay svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .social-gallery__item-label {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-inverse);
+    line-height: var(--leading-snug);
+  }
+
+  .social-gallery__empty {
+    text-align: center;
+    padding: var(--space-9) var(--page-gutter);
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Social Gallery",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Community"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "As Seen In Your Space"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Tag us @beedin to be featured."
+    },
+    {
+      "type": "text",
+      "id": "instagram_handle",
+      "label": "Instagram handle",
+      "default": "@beedin"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL (optional)"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link label (optional)",
+          "placeholder": "Shop the Look"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Linked product (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social Gallery",
+      "category": "Social",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

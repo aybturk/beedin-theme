@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "not-found": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Page Not Found",
+        "content": "<p>The page you're looking for doesn't exist. Browse our collections to find something beautiful.</p>"
+      }
+    }
+  },
+  "order": ["not-found"]
+}

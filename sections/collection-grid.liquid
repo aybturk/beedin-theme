@@ -1,0 +1,205 @@
+{%- liquid
+  assign products_per_page = section.settings.products_per_page | default: 24
+  assign sort_enabled = section.settings.sort_enabled
+  assign show_filter_tags = section.settings.show_filter_tags
+  assign tag_prefixes = 'category:,type:,style:,material:,color:,room:' | split: ','
+-%}
+
+{%- paginate collection.products by products_per_page -%}
+
+<section class="collection-grid" id="collection-grid-{{ section.id }}">
+
+  <!-- Collection Header -->
+  <div class="collection-grid__header">
+    <div class="collection-grid__header-inner">
+      {%- if collection.image != blank -%}
+        <div class="collection-grid__hero">
+          <img
+            src="{{ collection.image | image_url: width: 1600 }}"
+            srcset="
+              {{ collection.image | image_url: width: 800 }} 800w,
+              {{ collection.image | image_url: width: 1200 }} 1200w,
+              {{ collection.image | image_url: width: 1600 }} 1600w
+            "
+            sizes="100vw"
+            alt="{{ collection.image.alt | default: collection.title | escape }}"
+            loading="eager"
+            class="collection-grid__hero-image"
+            width="{{ collection.image.width }}"
+            height="{{ collection.image.height }}"
+          >
+          <div class="collection-grid__hero-overlay"></div>
+          <div class="collection-grid__hero-content">
+            <h1 class="collection-grid__title collection-grid__title--hero">{{ collection.title }}</h1>
+            {%- if collection.description != blank -%}
+              <div class="collection-grid__description">{{ collection.description }}</div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- else -%}
+        <div class="collection-grid__title-wrap">
+          <div class="breadcrumb-wrap">{% render 'breadcrumb' %}</div>
+          <h1 class="collection-grid__title">{{ collection.title }}</h1>
+          {%- if collection.description != blank -%}
+            <div class="collection-grid__description rte">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- Toolbar: Filters + Sort -->
+  <div class="collection-grid__toolbar">
+    <div class="collection-grid__toolbar-inner">
+
+      <!-- Active Tags -->
+      {%- if current_tags.size > 0 or sort_by != blank -%}
+        <div class="collection-grid__active-filters">
+          {%- for tag in current_tags -%}
+            {%- assign tag_parts = tag | split: ':' -%}
+            {%- assign tag_label = tag_parts.last | replace: '-', ' ' | capitalize -%}
+            <a
+              href="{{ collection.url }}{% unless current_tags.size <= 1 %}{% assign remaining_tags = current_tags | reject: tag %}+{{ remaining_tags | join: '+' }}{% endunless %}"
+              class="collection-grid__active-tag"
+            >
+              <span>{{ tag_label }}</span>
+              {% render 'icon', name: 'close' %}
+            </a>
+          {%- endfor -%}
+          {%- if current_tags.size > 0 -%}
+            <a href="{{ collection.url }}" class="collection-grid__clear-filters">{{ 'collections.filters.clear_all' | t }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="collection-grid__toolbar-right">
+        <!-- Product Count -->
+        <span class="collection-grid__count">
+          {{ 'collections.filters.results_with_count' | t: count: collection.products_count }}
+        </span>
+
+        <!-- Sort -->
+        {%- if sort_enabled -%}
+          <div class="collection-grid__sort">
+            <label for="sort-by-{{ section.id }}" class="collection-grid__sort-label">{{ 'collections.sorting.title' | t }}</label>
+            <div class="collection-grid__sort-select-wrap">
+              <select
+                name="sort_by"
+                id="sort-by-{{ section.id }}"
+                class="collection-grid__sort-select"
+                aria-label="{{ 'collections.sorting.title' | t }}"
+                onchange="window.location.href = '{{ collection.url }}?sort_by=' + this.value + '{% if current_tags.size > 0 %}&tag={{ current_tags | join: '+' }}{% endif %}';"
+              >
+                {%- assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-ascending,created-descending' | split: ',' -%}
+                {%- assign sort_labels = 'collections.sorting.manual,collections.sorting.best_selling,collections.sorting.title_ascending,collections.sorting.title_descending,collections.sorting.price_ascending,collections.sorting.price_descending,collections.sorting.created_ascending,collections.sorting.created_descending' | split: ',' -%}
+                {%- for option in sort_options -%}
+                  <option
+                    value="{{ option }}"
+                    {% if collection.sort_by == option %}selected{% endif %}
+                  >
+                    {{ sort_labels[forloop.index0] | t }}
+                  </option>
+                {%- endfor -%}
+              </select>
+              {% render 'icon', name: 'chevron-down' %}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Tag Filters -->
+    {%- if show_filter_tags and collection.all_tags.size > 0 -%}
+      {%- assign grouped_tags = '' -%}
+      <div class="collection-grid__filters" id="collection-filters">
+        {%- for prefix in tag_prefixes -%}
+          {%- assign prefix_tags = collection.all_tags | where_exp: 'tag', 'tag contains prefix' -%}
+          {%- if prefix_tags.size > 0 -%}
+            {%- assign group_name = prefix | remove: ':' | capitalize -%}
+            <div class="collection-grid__filter-group">
+              <span class="collection-grid__filter-group-label">{{ group_name }}</span>
+              <div class="collection-grid__filter-tags">
+                {%- for tag in collection.all_tags -%}
+                  {%- if tag contains prefix -%}
+                    {%- assign tag_display = tag | remove: prefix | replace: '-', ' ' | capitalize -%}
+                    {%- assign is_active = false -%}
+                    {%- if current_tags contains tag -%}
+                      {%- assign is_active = true -%}
+                    {%- endif -%}
+                    <a
+                      href="{{ collection.url }}/{{ tag | url_encode }}{% if is_active %}{% else %}{% if current_tags.size > 0 %}+{{ current_tags | join: '+' }}{% endif %}{% endif %}"
+                      class="collection-grid__filter-tag{% if is_active %} is-active{% endif %}"
+                    >
+                      {{ tag_display }}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- Product Grid -->
+  {%- if collection.products.size > 0 -%}
+    <div class="collection-grid__products" id="product-grid">
+      {%- for product in collection.products -%}
+        <div class="reveal" style="--delay: {{ forloop.index0 | modulo: 4 | times: 0.07 }}s">
+          {% render 'product-card', product: product, show_secondary_image: true %}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <div class="collection-grid__empty">
+      <p>{{ 'sections.collection_grid.no_products' | t }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn--secondary">{{ 'general.cart.continue_shopping' | t }}</a>
+    </div>
+  {%- endif -%}
+
+  <!-- Pagination -->
+  {%- if paginate.pages > 1 -%}
+    <div class="collection-grid__pagination">
+      {% render 'pagination', paginate: paginate %}
+    </div>
+  {%- endif -%}
+
+</section>
+
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter_tags",
+      "label": "Show tag filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_enabled",
+      "label": "Enable sort dropdown",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Grid",
+      "category": "Collections"
+    }
+  ]
+}
+{% endschema %}

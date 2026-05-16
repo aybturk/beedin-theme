@@ -1,0 +1,47 @@
+{%- liquid
+  comment
+    Usage:
+      {% render 'price', product: product %}
+      {% render 'price', variant: variant %}
+
+    Renders sale price (in accent color) + compare-at strikethrough if on sale.
+    Handles range pricing for products with multiple variants.
+  endcomment
+
+  assign target = variant | default: product
+  assign on_sale = false
+
+  if target.compare_at_price > target.price
+    assign on_sale = true
+  endif
+
+  if variant == blank and product != blank
+    assign on_sale = product.compare_at_price > product.price
+  endif
+-%}
+
+<div class="price{% if on_sale %} price--on-sale{% endif %}">
+
+  {%- if target.available == false -%}
+    <span class="price__amount price__amount--sold-out">{{ 'products.product.sold_out' | t }}</span>
+
+  {%- elsif on_sale -%}
+    <span class="price__amount price__amount--sale" aria-label="{{ 'products.product.on_sale' | t }}">
+      {{ target.price | money }}
+    </span>
+    <s class="price__amount price__amount--compare" aria-label="{{ 'products.product.compare_at' | t }}">
+      {{ target.compare_at_price | money }}
+    </s>
+
+  {%- elsif product != blank and product.price_varies -%}
+    <span class="price__amount">
+      {{ 'products.product.from_price_html' | t: price: product.price_min | money }}
+    </span>
+
+  {%- else -%}
+    <span class="price__amount">
+      {{ target.price | money }}
+    </span>
+  {%- endif -%}
+
+</div>

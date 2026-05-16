@@ -1,0 +1,249 @@
+{%- liquid
+  comment
+    Usage: {% render 'cart-line-item', item: item %}
+    Renders a single cart line item with image, title, variant, price, quantity stepper, remove button.
+  endcomment
+-%}
+
+<div class="cart-item" id="cart-item-{{ item.key | replace: ':', '-' }}" data-cart-item-key="{{ item.key }}">
+
+  <!-- Image -->
+  <a href="{{ item.url }}" class="cart-item__media-link" aria-hidden="true" tabindex="-1">
+    <div class="cart-item__media">
+      {%- if item.image != blank -%}
+        <img
+          src="{{ item.image | image_url: width: 200 }}"
+          alt="{{ item.image.alt | default: item.product.title | escape }}"
+          loading="lazy"
+          width="100"
+          height="{{ 100 | divided_by: item.image.aspect_ratio | round }}"
+          class="cart-item__image"
+        >
+      {%- else -%}
+        <div class="cart-item__image-placeholder"></div>
+      {%- endif -%}
+    </div>
+  </a>
+
+  <!-- Details -->
+  <div class="cart-item__details">
+    <div class="cart-item__info">
+      <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+
+      {%- unless item.variant.title == 'Default Title' -%}
+        <p class="cart-item__variant">{{ item.variant.title }}</p>
+      {%- endunless -%}
+
+      {%- if item.selling_plan_allocation -%}
+        <p class="cart-item__selling-plan">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+      {%- endif -%}
+
+      <!-- Price (mobile: shown here) -->
+      <div class="cart-item__price-mobile">
+        {% render 'price', variant: item.variant %}
+      </div>
+    </div>
+
+    <div class="cart-item__actions">
+      <!-- Quantity Stepper -->
+      <form action="{{ routes.cart_change_url }}" method="post" class="cart-item__quantity-form" data-cart-item-form>
+        <input type="hidden" name="id" value="{{ item.key }}">
+        <div class="quantity-stepper quantity-stepper--compact">
+          <button
+            type="button"
+            class="quantity-stepper__btn quantity-stepper__btn--minus"
+            aria-label="Decrease quantity of {{ item.product.title | escape }}"
+            data-quantity-target="qty-{{ item.key | replace: ':', '-' }}"
+          >
+            {% render 'icon', name: 'minus' %}
+          </button>
+          <input
+            type="number"
+            name="quantity"
+            id="qty-{{ item.key | replace: ':', '-' }}"
+            value="{{ item.quantity }}"
+            min="0"
+            class="quantity-stepper__input"
+            aria-label="{{ 'products.product.quantity' | t }}"
+            data-cart-quantity-input
+          >
+          <button
+            type="button"
+            class="quantity-stepper__btn quantity-stepper__btn--plus"
+            aria-label="Increase quantity of {{ item.product.title | escape }}"
+            data-quantity-target="qty-{{ item.key | replace: ':', '-' }}"
+          >
+            {% render 'icon', name: 'plus' %}
+          </button>
+        </div>
+      </form>
+
+      <!-- Remove -->
+      <a
+        href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0"
+        class="cart-item__remove"
+        aria-label="{{ 'sections.cart_drawer.remove_item' | t }}"
+        data-cart-remove="{{ item.key }}"
+      >
+        {% render 'icon', name: 'close' %}
+        <span class="visually-hidden">{{ 'general.cart.remove' | t }}</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Price (desktop: shown here, aligned right) -->
+  <div class="cart-item__price-desktop">
+    <div class="cart-item__line-price">
+      {{ item.line_price | money }}
+    </div>
+    {%- if item.original_line_price != item.line_price -%}
+      <s class="cart-item__original-price">{{ item.original_line_price | money }}</s>
+    {%- endif -%}
+  </div>
+
+</div>
+
+<style>
+  .cart-item {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: var(--space-4);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--color-border);
+    align-items: start;
+  }
+
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+
+  .cart-item__media {
+    width: 100px;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-bg-alt);
+  }
+
+  .cart-item__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cart-item__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-alt);
+  }
+
+  .cart-item__media-link {
+    display: block;
+  }
+
+  .cart-item__details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    gap: var(--space-3);
+  }
+
+  .cart-item__title {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+    line-height: var(--leading-snug);
+    transition: color var(--duration-fast);
+  }
+
+  .cart-item__title:hover {
+    color: var(--color-accent);
+  }
+
+  .cart-item__variant {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+    margin: var(--space-1) 0 0;
+  }
+
+  .cart-item__selling-plan {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-accent);
+    margin: var(--space-1) 0 0;
+  }
+
+  .cart-item__price-mobile {
+    display: none;
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .cart-item__price-mobile {
+      display: block;
+    }
+    .cart-item__price-desktop {
+      display: none;
+    }
+  }
+
+  .cart-item__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .quantity-stepper--compact .quantity-stepper__btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .quantity-stepper--compact .quantity-stepper__input {
+    width: 40px;
+    height: 32px;
+    font-size: var(--type-sm);
+  }
+
+  .cart-item__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+    flex-shrink: 0;
+  }
+
+  .cart-item__remove:hover {
+    color: var(--color-error);
+  }
+
+  .cart-item__remove svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .cart-item__price-desktop {
+    text-align: right;
+  }
+
+  .cart-item__line-price {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .cart-item__original-price {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+  }
+</style>

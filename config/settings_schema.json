@@ -1,0 +1,234 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Beedin Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Beedin",
+    "theme_documentation_url": "https://beedin.co",
+    "theme_support_url": "https://beedin.co/support"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Background Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Background",
+        "default": "#F7F4F0"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_alt",
+        "label": "Background Alt",
+        "default": "#EFEBE5"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_dark",
+        "label": "Background Dark",
+        "default": "#1C1917"
+      },
+      {
+        "type": "header",
+        "content": "Text Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#2A2420"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Text Muted",
+        "default": "#8C7E76"
+      },
+      {
+        "type": "header",
+        "content": "Accent"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#B8956A"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_hover",
+        "label": "Accent Hover",
+        "default": "#A07D54"
+      },
+      {
+        "type": "header",
+        "content": "Borders"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#DDD6CE"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Display Font"
+      },
+      {
+        "type": "select",
+        "id": "font_display",
+        "label": "Display font",
+        "options": [
+          { "value": "cormorant", "label": "Cormorant Garamond (serif)" },
+          { "value": "playfair", "label": "Playfair Display (serif)" }
+        ],
+        "default": "cormorant",
+        "info": "Used for headings and editorial text"
+      },
+      {
+        "type": "header",
+        "content": "Body Font"
+      },
+      {
+        "type": "select",
+        "id": "font_body",
+        "label": "Body font",
+        "options": [
+          { "value": "dm_sans", "label": "DM Sans (sans-serif)" },
+          { "value": "inter", "label": "Inter (sans-serif)" }
+        ],
+        "default": "dm_sans",
+        "info": "Used for body text, UI elements, and captions"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base font size (px)",
+        "min": 14,
+        "max": 20,
+        "step": 1,
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Store Info",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "text",
+        "id": "logo_text",
+        "label": "Logo text (if no image)",
+        "default": "BEEDIN",
+        "info": "Shown when no logo image is uploaded"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width (px)",
+        "min": 80,
+        "max": 300,
+        "step": 10,
+        "default": 140
+      },
+      {
+        "type": "header",
+        "content": "Store Details"
+      },
+      {
+        "type": "richtext",
+        "id": "store_address",
+        "label": "Store address"
+      },
+      {
+        "type": "text",
+        "id": "store_email",
+        "label": "Contact email"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "placeholder": "https://instagram.com/beedin"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest URL",
+        "placeholder": "https://pinterest.com/beedin"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL",
+        "placeholder": "https://facebook.com/beedin"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL",
+        "placeholder": "https://tiktok.com/@beedin"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          { "value": "drawer", "label": "Drawer (slide-in)" },
+          { "value": "page", "label": "Page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_note",
+        "label": "Show order note field",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Animations",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "animations_enabled",
+        "label": "Enable scroll reveal animations",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hero_scale_enabled",
+        "label": "Enable hero image scale on load",
+        "default": true
+      }
+    ]
+  }
+]

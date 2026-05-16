@@ -1,0 +1,245 @@
+<section class="cart-page" id="cart-items-{{ section.id }}">
+  <div class="cart-page__inner">
+
+    <div class="cart-page__header reveal">
+      <h1 class="cart-page__title">{{ 'general.cart.title' | t }}</h1>
+      {%- if cart.item_count > 0 -%}
+        <p class="cart-page__count">{{ 'general.cart.item_count' | t: count: cart.item_count }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-page__empty reveal">
+        <p class="cart-page__empty-text">{{ 'general.cart.empty_html' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'general.cart.continue_shopping' | t }}</a>
+      </div>
+
+    {%- else -%}
+      <div class="cart-page__layout">
+        <!-- Cart Items -->
+        <div class="cart-page__items">
+          {% form 'cart', id: 'cart-page-form' %}
+            {%- for item in cart.items -%}
+              {% render 'cart-line-item', item: item %}
+            {%- endfor -%}
+
+            {%- if section.settings.show_note -%}
+              <div class="cart-page__note">
+                <label for="cart-note" class="cart-page__note-label">{{ 'general.cart.note' | t }}</label>
+                <textarea
+                  name="note"
+                  id="cart-note"
+                  rows="3"
+                  placeholder="{{ 'general.cart.note_placeholder' | t }}"
+                  class="cart-page__note-input"
+                >{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+
+            <button type="submit" name="update" class="btn btn--secondary cart-page__update-btn">
+              {{ 'general.cart.update' | t }}
+            </button>
+          {% endform %}
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="cart-page__summary reveal">
+          <div class="cart-page__summary-inner">
+            <h2 class="cart-page__summary-title">Order Summary</h2>
+
+            <div class="cart-page__summary-row">
+              <span>{{ 'general.cart.subtotal' | t }}</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+
+            <p class="cart-page__summary-note">{{ 'general.cart.taxes_and_shipping' | t }}</p>
+
+            <a href="{{ routes.checkout_url }}" class="btn btn--primary cart-page__checkout-btn">
+              {{ 'general.cart.checkout' | t }}
+            </a>
+
+            <a href="{{ routes.all_products_collection_url }}" class="cart-page__continue-link">
+              {{ 'general.cart.continue_shopping' | t }}
+            </a>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  .cart-page {
+    padding: var(--space-9) var(--page-gutter);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .cart-page__header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cart-page__title {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .cart-page__count {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .cart-page__empty {
+    text-align: center;
+    padding: var(--space-10) 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .cart-page__empty-text {
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: var(--color-text-muted);
+    line-height: var(--leading-loose);
+    margin-bottom: var(--space-7);
+  }
+
+  .cart-page__layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .cart-page__layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cart-page__note {
+    margin-top: var(--space-6);
+  }
+
+  .cart-page__note-label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .cart-page__note-input {
+    width: 100%;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text);
+    resize: vertical;
+    outline: none;
+    transition: border-color var(--duration-fast);
+  }
+
+  .cart-page__note-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .cart-page__update-btn {
+    margin-top: var(--space-5);
+  }
+
+  .cart-page__summary {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+  }
+
+  .cart-page__summary-inner {
+    padding: var(--space-7);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+  }
+
+  .cart-page__summary-title {
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-size: var(--type-xs);
+    color: var(--color-text);
+    margin: 0 0 var(--space-6) 0;
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cart-page__summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .cart-page__summary-note {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+    margin: var(--space-4) 0 var(--space-6);
+    line-height: var(--leading-loose);
+  }
+
+  .cart-page__checkout-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .cart-page__continue-link {
+    display: block;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-top: var(--space-4);
+    transition: color var(--duration-fast);
+  }
+
+  .cart-page__continue-link:hover {
+    color: var(--color-text);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Cart Items",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show order note field",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Items",
+      "category": "Cart"
+    }
+  ]
+}
+{% endschema %}

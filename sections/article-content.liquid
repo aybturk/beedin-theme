@@ -1,0 +1,298 @@
+<article class="article-content" id="article-content-{{ section.id }}" itemscope itemtype="https://schema.org/Article">
+
+  <!-- Article Header -->
+  <header class="article-content__header reveal">
+    {%- if article.tags.size > 0 -%}
+      <div class="article-content__tags">
+        {%- for tag in article.tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-content__tag">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <h1 class="article-content__title" itemprop="headline">{{ article.title }}</h1>
+
+    <div class="article-content__meta">
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datePublished" class="article-content__date">
+        {{ article.published_at | date: '%B %d, %Y' }}
+      </time>
+      <span class="article-content__author" itemprop="author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+    </div>
+  </header>
+
+  {%- if article.image != blank -%}
+    <div class="article-content__hero reveal">
+      <img
+        src="{{ article.image | image_url: width: 1400 }}"
+        srcset="
+          {{ article.image | image_url: width: 800 }} 800w,
+          {{ article.image | image_url: width: 1200 }} 1200w,
+          {{ article.image | image_url: width: 1400 }} 1400w
+        "
+        sizes="(max-width: 768px) 100vw, 860px"
+        alt="{{ article.image.alt | default: article.title | escape }}"
+        loading="eager"
+        class="article-content__hero-image"
+        width="{{ article.image.width }}"
+        height="{{ article.image.height }}"
+        itemprop="image"
+      >
+    </div>
+  {%- endif -%}
+
+  <!-- Article Body -->
+  <div class="article-content__body">
+    <div class="article-content__prose rte reveal" itemprop="articleBody">
+      {{ article.content }}
+    </div>
+  </div>
+
+  <!-- Back to Blog -->
+  <div class="article-content__back reveal">
+    <a href="{{ blog.url }}" class="article-content__back-link">
+      {% render 'icon', name: 'arrow-right' %}
+      <span>{{ 'blogs.article.back_to_blog' | t }}</span>
+    </a>
+  </div>
+
+  <!-- Previous/Next -->
+  {%- if blog.next_article or blog.previous_article -%}
+    <nav class="article-content__nav" aria-label="Article navigation">
+      {%- if blog.previous_article -%}
+        <a href="{{ blog.previous_article }}" class="article-content__nav-link article-content__nav-link--prev">
+          <span class="article-content__nav-label">Previous</span>
+          <span class="article-content__nav-title">{{ blog.previous_article.title }}</span>
+        </a>
+      {%- else -%}
+        <span></span>
+      {%- endif -%}
+      {%- if blog.next_article -%}
+        <a href="{{ blog.next_article }}" class="article-content__nav-link article-content__nav-link--next">
+          <span class="article-content__nav-label">Next</span>
+          <span class="article-content__nav-title">{{ blog.next_article.title }}</span>
+        </a>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+
+</article>
+
+<style>
+  .article-content {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--page-gutter) var(--section-gap);
+  }
+
+  .article-content__header {
+    max-width: 860px;
+    margin: var(--space-9) auto var(--space-7);
+    text-align: center;
+  }
+
+  .article-content__tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .article-content__tag {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+  }
+
+  .article-content__tag:hover {
+    color: var(--color-text);
+  }
+
+  .article-content__title {
+    font-family: var(--font-display);
+    font-size: var(--type-2xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    margin: 0 0 var(--space-5) 0;
+  }
+
+  @media (max-width: 768px) {
+    .article-content__title {
+      font-size: var(--type-xl);
+    }
+  }
+
+  .article-content__meta {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .article-content__hero {
+    max-width: 1080px;
+    margin: 0 auto var(--space-9);
+    overflow: hidden;
+  }
+
+  .article-content__hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+  }
+
+  .article-content__body {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .article-content__prose {
+    font-family: var(--font-body);
+    font-size: var(--type-md);
+    color: var(--color-text);
+    line-height: var(--leading-loose);
+  }
+
+  .article-content__prose h2,
+  .article-content__prose h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin-top: var(--space-9);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content__prose h2 {
+    font-size: var(--type-xl);
+  }
+
+  .article-content__prose h3 {
+    font-size: var(--type-lg);
+  }
+
+  .article-content__prose p {
+    margin-bottom: var(--space-6);
+  }
+
+  .article-content__prose img {
+    max-width: 100%;
+    height: auto;
+    margin: var(--space-8) 0;
+  }
+
+  .article-content__prose blockquote {
+    border-left: 2px solid var(--color-accent);
+    padding-left: var(--space-6);
+    margin: var(--space-8) 0;
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--color-text);
+  }
+
+  .article-content__back {
+    max-width: 720px;
+    margin: var(--space-9) auto 0;
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .article-content__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast), gap var(--duration-fast);
+  }
+
+  .article-content__back-link svg {
+    width: 16px;
+    height: 16px;
+    transform: rotate(180deg);
+    transition: transform var(--duration-fast);
+  }
+
+  .article-content__back-link:hover {
+    color: var(--color-text);
+  }
+
+  .article-content__back-link:hover svg {
+    transform: rotate(180deg) translateX(3px);
+  }
+
+  .article-content__nav {
+    max-width: 720px;
+    margin: var(--space-9) auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .article-content__nav-link {
+    text-decoration: none;
+    color: inherit;
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    transition: background var(--duration-fast);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .article-content__nav-link:hover {
+    background: var(--color-border);
+  }
+
+  .article-content__nav-link--next {
+    text-align: right;
+  }
+
+  .article-content__nav-label {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .article-content__nav-title {
+    font-family: var(--font-display);
+    font-size: var(--type-base);
+    font-weight: 400;
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Article Content",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Article Content",
+      "category": "Blog"
+    }
+  ]
+}
+{% endschema %}

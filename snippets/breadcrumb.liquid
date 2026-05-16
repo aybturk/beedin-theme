@@ -1,0 +1,122 @@
+{%- liquid
+  comment
+    Usage: {% render 'breadcrumb' %}
+    Renders: Home > Collection > Product
+    Uses Shopify's template object to determine context.
+  endcomment
+-%}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list" role="list" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+    <!-- Home -->
+    <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="{{ routes.root_url }}" class="breadcrumb__link" itemprop="item">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content="1">
+    </li>
+
+    {%- if template.name == 'product' -%}
+      {%- if collection != blank -%}
+        <li class="breadcrumb__separator" aria-hidden="true">/</li>
+        <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ collection.url }}" class="breadcrumb__link" itemprop="item">
+            <span itemprop="name">{{ collection.title }}</span>
+          </a>
+          <meta itemprop="position" content="2">
+        </li>
+        <li class="breadcrumb__separator" aria-hidden="true">/</li>
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ product.title }}</span>
+          <meta itemprop="position" content="3">
+        </li>
+      {%- else -%}
+        <li class="breadcrumb__separator" aria-hidden="true">/</li>
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ product.title }}</span>
+          <meta itemprop="position" content="2">
+        </li>
+      {%- endif -%}
+
+    {%- elsif template.name == 'collection' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ collection.title }}</span>
+        <meta itemprop="position" content="2">
+      </li>
+
+    {%- elsif template.name == 'page' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ page.title }}</span>
+        <meta itemprop="position" content="2">
+      </li>
+
+    {%- elsif template.name == 'article' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ blog.url }}" class="breadcrumb__link" itemprop="item">
+          <span itemprop="name">{{ blog.title }}</span>
+        </a>
+        <meta itemprop="position" content="2">
+      </li>
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ article.title | truncate: 50 }}</span>
+        <meta itemprop="position" content="3">
+      </li>
+
+    {%- elsif template.name == 'blog' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <span class="breadcrumb__current" itemprop="name" aria-current="page">{{ blog.title }}</span>
+        <meta itemprop="position" content="2">
+      </li>
+    {%- endif -%}
+
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    margin-bottom: var(--space-4);
+  }
+
+  .breadcrumb__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .breadcrumb__link {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .breadcrumb__link:hover {
+    color: var(--color-text);
+  }
+
+  .breadcrumb__separator {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-border);
+    list-style: none;
+  }
+
+  .breadcrumb__current {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
+  }
+</style>

@@ -1,0 +1,179 @@
+{%- paginate search.results by section.settings.results_per_page -%}
+
+<section class="search-results" id="search-results-{{ section.id }}">
+  <div class="search-results__inner">
+
+    <div class="search-results__header reveal">
+      <h1 class="search-results__heading">{{ 'general.search.title' | t }}</h1>
+
+      <!-- Search form -->
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-results__form">
+        <div class="search-results__field">
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            class="search-results__input"
+            aria-label="{{ 'general.search.placeholder' | t }}"
+          >
+          <input type="hidden" name="type" value="product">
+          <button type="submit" class="btn btn--primary search-results__submit">
+            {{ 'general.search.submit' | t }}
+          </button>
+        </div>
+      </form>
+
+      {%- if search.performed -%}
+        {%- if search.results_count > 0 -%}
+          <p class="search-results__count">
+            {{ 'general.search.results_count' | t: count: search.results_count, query: search.terms }}
+          </p>
+        {%- else -%}
+          <p class="search-results__no-results">
+            {{ 'general.search.no_results' | t: query: search.terms }}
+          </p>
+          <p class="search-results__no-results-message">{{ 'sections.search_results.no_results_message' | t }}</p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    {%- if search.performed and search.results_count > 0 -%}
+      <div class="search-results__grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            <div class="reveal" style="--delay: {{ forloop.index0 | modulo: 4 | times: 0.07 }}s">
+              {% render 'product-card', product: item, show_secondary_image: true %}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <div class="search-results__pagination">
+          {% render 'pagination', paginate: paginate %}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  .search-results {
+    padding: var(--space-9) var(--page-gutter);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .search-results__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin: 0 0 var(--space-7) 0;
+  }
+
+  .search-results__form {
+    max-width: 560px;
+    margin-bottom: var(--space-7);
+  }
+
+  .search-results__field {
+    display: flex;
+    gap: 0;
+  }
+
+  .search-results__input {
+    flex: 1;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-right: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: var(--color-text);
+    outline: none;
+    transition: border-color var(--duration-fast);
+    min-width: 0;
+  }
+
+  .search-results__input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .search-results__submit {
+    flex-shrink: 0;
+  }
+
+  .search-results__count {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-8) 0;
+  }
+
+  .search-results__no-results {
+    font-family: var(--font-display);
+    font-size: var(--type-lg);
+    font-weight: 300;
+    color: var(--color-text);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .search-results__no-results-message {
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-8) 0;
+  }
+
+  .search-results__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+  }
+
+  @media (max-width: 1024px) {
+    .search-results__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .search-results__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+  }
+
+  .search-results__pagination {
+    margin-top: var(--space-9);
+  }
+</style>
+
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Search Results",
+  "settings": [
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "Results per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Results",
+      "category": "Search"
+    }
+  ]
+}
+{% endschema %}

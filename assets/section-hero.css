@@ -1,0 +1,210 @@
+/* ============================================================
+   BEEDIN THEME — Hero Sections CSS
+   No background-attachment:fixed. No parallax.
+   Subtle CSS scale animation on load for cinematic feel.
+   ============================================================ */
+
+
+/* ============================================================
+   HERO FULLSCREEN
+   ============================================================ */
+
+.hero-fullscreen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  max-height: 1200px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;  /* content anchored to bottom-left */
+}
+
+/* Media layer */
+.hero-fullscreen__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Image: CSS animation — scale from 1.0 → 1.04 over 5s on load */
+/* No parallax, no background-attachment:fixed */
+.hero-fullscreen--animated .hero-fullscreen__image {
+  animation: hero-scale-in 5s var(--ease-out-expo) forwards;
+}
+
+@keyframes hero-scale-in {
+  from {
+    transform: scale(1.0);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.hero-fullscreen__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  will-change: transform;
+}
+
+.hero-fullscreen__placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #3D3430 100%);
+}
+
+/* Overlay */
+.hero-fullscreen__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 25, 23, var(--overlay-opacity, 0.3));
+  z-index: 1;
+  /* Gradient: stronger at bottom where text sits */
+  background: linear-gradient(
+    to top,
+    rgba(28, 25, 23, calc(var(--overlay-opacity, 0.3) * 2)) 0%,
+    rgba(28, 25, 23, var(--overlay-opacity, 0.3)) 40%,
+    rgba(28, 25, 23, calc(var(--overlay-opacity, 0.3) * 0.5)) 100%
+  );
+}
+
+/* Content: bottom-left positioned */
+.hero-fullscreen__content {
+  position: relative;
+  z-index: 2;
+  padding: var(--space-11) var(--page-gutter) var(--space-10);
+  max-width: calc(var(--container-max) + 2 * var(--page-gutter));
+  width: 100%;
+  color: var(--hero-text-color, var(--color-text-inverse));
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen__content {
+    padding: var(--space-8) var(--page-gutter) var(--space-8);
+  }
+}
+
+.hero-fullscreen__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--type-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: rgba(247, 244, 240, 0.75);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.hero-fullscreen__heading {
+  font-family: var(--font-display);
+  font-size: var(--type-3xl);
+  font-weight: 300;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--hero-text-color, var(--color-text-inverse));
+  margin: 0 0 var(--space-5) 0;
+  max-width: 14ch;
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen__heading {
+    font-size: var(--type-2xl);
+    max-width: 100%;
+  }
+}
+
+.hero-fullscreen__subheading {
+  font-family: var(--font-body);
+  font-size: var(--type-md);
+  color: rgba(247, 244, 240, 0.85);
+  line-height: var(--leading-loose);
+  margin: 0 0 var(--space-8) 0;
+  max-width: 480px;
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen__subheading {
+    font-size: var(--type-base);
+    max-width: 100%;
+    margin-bottom: var(--space-6);
+  }
+}
+
+.hero-fullscreen__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hero-fullscreen__cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--duration-fast);
+}
+
+.hero-fullscreen__cta:hover svg {
+  transform: translateX(4px);
+}
+
+
+/* ============================================================
+   REVEAL ANIMATION — staggered with delay var
+   ============================================================ */
+
+.hero-fullscreen__content .hero-fullscreen__eyebrow {
+  --delay: 0.2s;
+}
+
+.hero-fullscreen__content .hero-fullscreen__heading {
+  --delay: 0.4s;
+}
+
+.hero-fullscreen__content .hero-fullscreen__subheading {
+  --delay: 0.6s;
+}
+
+.hero-fullscreen__content .hero-fullscreen__cta {
+  --delay: 0.8s;
+}
+
+
+/* ============================================================
+   SCROLL INDICATOR (optional decoration)
+   ============================================================ */
+
+.hero-fullscreen__scroll-indicator {
+  position: absolute;
+  bottom: var(--space-7);
+  right: var(--page-gutter);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: rgba(247, 244, 240, 0.5);
+  font-family: var(--font-body);
+  font-size: var(--type-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+}
+
+.hero-fullscreen__scroll-line {
+  width: 1px;
+  height: 48px;
+  background: rgba(247, 244, 240, 0.4);
+  animation: scroll-line 2s ease-in-out infinite;
+}
+
+@keyframes scroll-line {
+  0%, 100% { transform: scaleY(1); opacity: 0.4; }
+  50% { transform: scaleY(0.5); opacity: 0.2; }
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen__scroll-indicator {
+    display: none;
+  }
+}

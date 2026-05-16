@@ -1,0 +1,38 @@
+{%- liquid
+  comment
+    Usage: {% render 'product-badge', product: product %}
+    Renders New Arrival or Best Seller badges based on product tags.
+    Also renders a Sale badge if the product is on sale.
+  endcomment
+
+  assign badge_new = false
+  assign badge_bestseller = false
+  assign badge_sale = false
+
+  for tag in product.tags
+    if tag == 'collection:new-arrival' or tag == 'new-arrival' or tag == 'new arrival'
+      assign badge_new = true
+    endif
+    if tag == 'best-seller' or tag == 'bestseller' or tag == 'best seller'
+      assign badge_bestseller = true
+    endif
+  endfor
+
+  if product.compare_at_price > product.price
+    assign badge_sale = true
+  endif
+-%}
+
+{%- if badge_new or badge_bestseller or badge_sale -%}
+  <div class="product-badge-group" aria-hidden="true">
+    {%- if badge_new -%}
+      <span class="badge badge--new">{{ 'products.product.new_arrival' | t }}</span>
+    {%- endif -%}
+    {%- if badge_bestseller -%}
+      <span class="badge badge--bestseller">{{ 'products.product.best_seller' | t }}</span>
+    {%- endif -%}
+    {%- if badge_sale and badge_new == false -%}
+      <span class="badge badge--sale">{{ 'products.product.sale' | t }}</span>
+    {%- endif -%}
+  </div>
+{%- endif -%}

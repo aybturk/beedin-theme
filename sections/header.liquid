@@ -1,0 +1,198 @@
+<header
+  class="site-header"
+  id="site-header"
+  role="banner"
+>
+  <div class="site-header__inner">
+
+    <!-- Mobile: Hamburger -->
+    <button
+      class="site-header__hamburger"
+      id="mobile-menu-toggle"
+      aria-label="{{ 'accessibility.open_menu' | t }}"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      type="button"
+    >
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+
+    <!-- Logo -->
+    <div class="site-header__logo">
+      <a href="{{ routes.root_url }}" class="site-header__logo-link" aria-label="{{ shop.name }}">
+        {%- if settings.logo != blank -%}
+          <img
+            src="{{ settings.logo | image_url: width: settings.logo_width }}"
+            alt="{{ settings.logo.alt | default: shop.name }}"
+            width="{{ settings.logo_width }}"
+            height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio | round }}"
+            loading="eager"
+            class="site-header__logo-image"
+          >
+        {%- else -%}
+          <span class="site-header__logo-text">{{ settings.logo_text | default: shop.name | upcase }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <!-- Desktop Nav -->
+    <nav class="site-header__nav" role="navigation" aria-label="Main navigation">
+      <ul class="site-header__nav-list" role="list">
+        {%- assign nav_links = section.settings.nav_menu | default: 'main-menu' -%}
+        {%- for link in linklists[nav_links].links -%}
+          <li class="site-header__nav-item{% if link.links.size > 0 %} has-dropdown{% endif %}">
+            <a
+              href="{{ link.url }}"
+              class="site-header__nav-link{% if link.active %} is-active{% endif %}"
+            >
+              {{ link.title }}
+              {%- if link.links.size > 0 -%}
+                {% render 'icon', name: 'chevron-down' %}
+              {%- endif -%}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="site-header__dropdown" role="list">
+                {%- for child_link in link.links -%}
+                  <li>
+                    <a href="{{ child_link.url }}" class="site-header__dropdown-link{% if child_link.active %} is-active{% endif %}">
+                      {{ child_link.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- else -%}
+          {%- assign default_links = 'Mirrors,/collections/mirrors|Wall Decor,/collections/wall-decor|Lighting,/collections/lighting|Table Decor,/collections/table-decor|Wooden Collection,/collections/wooden-collection|New Arrivals,/collections/new-arrivals' | split: '|' -%}
+          {%- for item in default_links -%}
+            {%- assign parts = item | split: ',' -%}
+            <li class="site-header__nav-item">
+              <a href="{{ parts[1] }}" class="site-header__nav-link">{{ parts[0] }}</a>
+            </li>
+          {%- endfor -%}
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <!-- Actions -->
+    <div class="site-header__actions">
+      <!-- Search -->
+      <button class="site-header__action-btn" id="search-toggle" aria-label="{{ 'accessibility.open_search' | t }}" type="button">
+        {% render 'icon', name: 'search' %}
+      </button>
+
+      <!-- Cart -->
+      <a
+        href="{{ routes.cart_url }}"
+        class="site-header__action-btn site-header__cart-btn"
+        id="cart-toggle"
+        aria-label="{{ 'accessibility.open_cart' | t }}"
+        data-cart-count="{{ cart.item_count }}"
+      >
+        {% render 'icon', name: 'cart' %}
+        <span class="site-header__cart-count{% if cart.item_count == 0 %} is-hidden{% endif %}" id="cart-count-badge">
+          {{ cart.item_count }}
+        </span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Search Bar (hidden by default) -->
+  <div class="site-header__search" id="search-bar" aria-hidden="true">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="site-header__search-form">
+      <input
+        type="search"
+        name="q"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        class="site-header__search-input"
+        aria-label="{{ 'general.search.placeholder' | t }}"
+        autocomplete="off"
+      >
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="site-header__search-submit" aria-label="{{ 'general.search.submit' | t }}">
+        {% render 'icon', name: 'search' %}
+      </button>
+      <button type="button" id="search-close" class="site-header__search-close" aria-label="{{ 'accessibility.close_modal' | t }}">
+        {% render 'icon', name: 'close' %}
+      </button>
+    </form>
+  </div>
+
+</header>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav-overlay" id="mobile-nav-overlay" aria-hidden="true"></div>
+<nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="mobile-nav__header">
+    <span class="mobile-nav__title">{{ 'sections.header.menu' | t }}</span>
+    <button class="mobile-nav__close" id="mobile-nav-close" aria-label="{{ 'accessibility.close_menu' | t }}" type="button">
+      {% render 'icon', name: 'close' %}
+    </button>
+  </div>
+  <ul class="mobile-nav__list" role="list">
+    {%- assign nav_links = section.settings.nav_menu | default: 'main-menu' -%}
+    {%- for link in linklists[nav_links].links -%}
+      <li class="mobile-nav__item">
+        <a href="{{ link.url }}" class="mobile-nav__link{% if link.active %} is-active{% endif %}">
+          {{ link.title }}
+        </a>
+        {%- if link.links.size > 0 -%}
+          <ul class="mobile-nav__sub-list" role="list">
+            {%- for child_link in link.links -%}
+              <li><a href="{{ child_link.url }}" class="mobile-nav__sub-link">{{ child_link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </li>
+    {%- else -%}
+      {%- assign default_links = 'Mirrors,/collections/mirrors|Wall Decor,/collections/wall-decor|Lighting,/collections/lighting|Table Decor,/collections/table-decor|Wooden Collection,/collections/wooden-collection|New Arrivals,/collections/new-arrivals' | split: '|' -%}
+      {%- for item in default_links -%}
+        {%- assign parts = item | split: ',' -%}
+        <li class="mobile-nav__item">
+          <a href="{{ parts[1] }}" class="mobile-nav__link">{{ parts[0] }}</a>
+        </li>
+      {%- endfor -%}
+    {%- endfor -%}
+  </ul>
+</nav>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "nav_menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Default header style",
+      "options": [
+        { "value": "transparent", "label": "Transparent (for hero pages)" },
+        { "value": "solid", "label": "Solid" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Sticky header",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header",
+      "category": "Header"
+    }
+  ]
+}
+{% endschema %}

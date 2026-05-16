@@ -1,0 +1,273 @@
+{%- liquid
+  assign featured_collection = collections[section.settings.collection]
+  assign product_count = section.settings.product_count | default: 8
+  assign layout = section.settings.layout | default: 'grid'
+-%}
+
+<section class="featured-collection" id="featured-collection-{{ section.id }}">
+  <div class="featured-collection__header reveal">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="featured-collection__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h2 class="featured-collection__heading">
+      {{ section.settings.title | default: featured_collection.title | default: 'New Arrivals' }}
+    </h2>
+    {%- if section.settings.view_all_label != blank and featured_collection != blank -%}
+      <a href="{{ featured_collection.url }}" class="featured-collection__view-all">
+        {{ section.settings.view_all_label }}
+        {% render 'icon', name: 'arrow-right' %}
+      </a>
+    {%- endif -%}
+  </div>
+
+  {%- if featured_collection != blank and featured_collection.products.size > 0 -%}
+    <div class="featured-collection__products featured-collection__products--{{ layout }}">
+      {%- for product in featured_collection.products limit: product_count -%}
+        <div class="reveal" style="--delay: {{ forloop.index0 | times: 0.07 }}s">
+          {% render 'product-card', product: product, show_secondary_image: true %}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <!-- Placeholder when no collection is selected or collection is empty -->
+    <div class="featured-collection__products featured-collection__products--grid">
+      {%- for i in (1..4) -%}
+        <div class="product-card-placeholder reveal" style="--delay: {{ forloop.index0 | times: 0.07 }}s">
+          <div class="product-card-placeholder__image"></div>
+          <div class="product-card-placeholder__info">
+            <div class="product-card-placeholder__title"></div>
+            <div class="product-card-placeholder__price"></div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_view_all_btn and featured_collection != blank -%}
+    <div class="featured-collection__footer reveal">
+      <a href="{{ featured_collection.url }}" class="btn btn--secondary">
+        {{ section.settings.view_all_btn_label | default: 'View All' }}
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .featured-collection {
+    padding: var(--section-gap) var(--page-gutter);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .featured-collection__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .featured-collection__eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .featured-collection__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .featured-collection__view-all {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+    transition: color var(--duration-fast), gap var(--duration-fast);
+    flex-shrink: 0;
+    padding-bottom: 2px;
+    border-bottom: 1px solid currentColor;
+  }
+
+  .featured-collection__view-all:hover {
+    color: var(--color-text);
+    gap: var(--space-3);
+  }
+
+  .featured-collection__view-all svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--duration-fast);
+  }
+
+  .featured-collection__view-all:hover svg {
+    transform: translateX(3px);
+  }
+
+  .featured-collection__products--grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+  }
+
+  @media (max-width: 1024px) {
+    .featured-collection__products--grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .featured-collection__products--grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .featured-collection__products--grid {
+      gap: var(--space-3);
+    }
+  }
+
+  .featured-collection__products--scroll {
+    display: flex;
+    gap: var(--space-5);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: var(--space-3);
+  }
+
+  .featured-collection__products--scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .featured-collection__products--scroll > * {
+    flex: 0 0 260px;
+    scroll-snap-align: start;
+  }
+
+  @media (max-width: 768px) {
+    .featured-collection__products--scroll > * {
+      flex: 0 0 220px;
+    }
+  }
+
+  .featured-collection__footer {
+    text-align: center;
+    margin-top: var(--space-9);
+  }
+
+  /* Placeholder card */
+  .product-card-placeholder__image {
+    aspect-ratio: 4 / 5;
+    background: var(--color-bg-alt);
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .product-card-placeholder__info {
+    padding: var(--space-4) 0;
+  }
+
+  .product-card-placeholder__title {
+    height: 14px;
+    background: var(--color-bg-alt);
+    margin-bottom: var(--space-3);
+    width: 70%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .product-card-placeholder__price {
+    height: 14px;
+    background: var(--color-bg-alt);
+    width: 40%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "placeholder": "Handpicked"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title (overrides collection title)",
+      "placeholder": "New Arrivals"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "label": "Number of products",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "scroll", "label": "Horizontal scroll" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all link text (top right)",
+      "placeholder": "View All"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all_btn",
+      "label": "Show View All button (bottom center)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "view_all_btn_label",
+      "label": "View All button text",
+      "default": "View All"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection",
+      "category": "Collections"
+    }
+  ]
+}
+{% endschema %}

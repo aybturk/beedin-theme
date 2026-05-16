@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F7F4F0">
+
+  {{ content_for_header }}
+
+  {%- liquid
+    assign locale_code = request.locale.iso_code
+  -%}
+
+  <!-- Google Fonts: Cormorant Garamond + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap">
+
+  <!-- Core Stylesheet -->
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <!-- Component Stylesheets -->
+  {{ 'component-header.css' | asset_url | stylesheet_tag }}
+  {{ 'component-product-card.css' | asset_url | stylesheet_tag }}
+  {{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}
+  {{ 'section-hero.css' | asset_url | stylesheet_tag }}
+  {{ 'section-collection-grid.css' | asset_url | stylesheet_tag }}
+
+  {% render 'seo-meta' %}
+
+  <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
+</head>
+
+<body class="template-{{ template.name | replace: '.', '-' }}{% if customer %} customer-logged-in{% endif %}">
+
+  <a class="skip-link visually-hidden" href="#main-content">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  {% section 'announcement-bar' %}
+  {% section 'header' %}
+
+  <main id="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+  {% section 'cart-drawer' %}
+
+  <!-- Theme JS -->
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+</body>
+</html>

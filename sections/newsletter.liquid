@@ -1,0 +1,212 @@
+<section class="newsletter-section" id="newsletter-{{ section.id }}">
+  <div class="newsletter-section__inner">
+    <div class="newsletter-section__content reveal">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="newsletter-section__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="newsletter-section__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="newsletter-section__form reveal">
+      {% form 'customer', id: 'newsletter-form-{{ section.id }}' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+
+        {%- if form.posted_successfully? -%}
+          <p class="newsletter-section__success">
+            {{ section.settings.success_message | default: 'sections.newsletter.success_message' | t }}
+          </p>
+        {%- else -%}
+          <div class="newsletter-section__field-group">
+            <label for="newsletter-email-{{ section.id }}" class="visually-hidden">Email address</label>
+            <input
+              type="email"
+              name="contact[email]"
+              id="newsletter-email-{{ section.id }}"
+              placeholder="{{ section.settings.placeholder | default: 'Your email address' }}"
+              required
+              autocomplete="email"
+              class="newsletter-section__input"
+            >
+            <button type="submit" class="btn btn--primary newsletter-section__submit">
+              {{ section.settings.button_label | default: 'sections.newsletter.button_label' | t }}
+            </button>
+          </div>
+          {%- if form.errors -%}
+            <p class="newsletter-section__error">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+          {%- if section.settings.disclaimer != blank -%}
+            <p class="newsletter-section__disclaimer">{{ section.settings.disclaimer }}</p>
+          {%- endif -%}
+        {%- endif -%}
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .newsletter-section {
+    padding: var(--section-gap) var(--page-gutter);
+    background: {% if section.settings.background == 'dark' %}var(--color-bg-dark){% elsif section.settings.background == 'accent' %}var(--color-accent){% else %}var(--color-bg-alt){% endif %};
+  }
+
+  .newsletter-section__inner {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .newsletter-section__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    color: {% if section.settings.background == 'dark' %}var(--color-text-inverse){% else %}var(--color-text){% endif %};
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .newsletter-section__subheading {
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: {% if section.settings.background == 'dark' %}rgba(247, 244, 240, 0.7){% else %}var(--color-text-muted){% endif %};
+    line-height: var(--leading-loose);
+    margin: 0 0 var(--space-8) 0;
+  }
+
+  .newsletter-section__field-group {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 480px) {
+    .newsletter-section__field-group {
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+  }
+
+  .newsletter-section__input {
+    flex: 1;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid {% if section.settings.background == 'dark' %}var(--color-border-dark){% else %}var(--color-border){% endif %};
+    border-right: none;
+    background: {% if section.settings.background == 'dark' %}rgba(255,255,255,0.06){% else %}var(--color-bg){% endif %};
+    color: {% if section.settings.background == 'dark' %}var(--color-text-inverse){% else %}var(--color-text){% endif %};
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    outline: none;
+    min-width: 0;
+    transition: border-color var(--duration-fast);
+  }
+
+  @media (max-width: 480px) {
+    .newsletter-section__input {
+      border-right: 1px solid var(--color-border);
+    }
+  }
+
+  .newsletter-section__input::placeholder {
+    color: {% if section.settings.background == 'dark' %}rgba(247, 244, 240, 0.4){% else %}var(--color-text-muted){% endif %};
+    opacity: 0.7;
+  }
+
+  .newsletter-section__input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .newsletter-section__submit {
+    border-left: none;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .newsletter-section__submit {
+      width: 100%;
+    }
+  }
+
+  .newsletter-section__success {
+    font-family: var(--font-body);
+    font-size: var(--type-base);
+    color: var(--color-accent);
+    padding: var(--space-5) 0;
+  }
+
+  .newsletter-section__error {
+    font-family: var(--font-body);
+    font-size: var(--type-sm);
+    color: var(--color-error);
+    margin-top: var(--space-3);
+  }
+
+  .newsletter-section__disclaimer {
+    font-family: var(--font-body);
+    font-size: var(--type-xs);
+    color: {% if section.settings.background == 'dark' %}rgba(247, 244, 240, 0.4){% else %}var(--color-text-muted){% endif %};
+    margin-top: var(--space-4);
+    line-height: var(--leading-loose);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the Beedin Community"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Styling tips, new arrivals, and exclusive offers — straight to your inbox."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for subscribing! Check your inbox for a welcome gift."
+    },
+    {
+      "type": "text",
+      "id": "disclaimer",
+      "label": "Disclaimer text (optional)",
+      "placeholder": "No spam. Unsubscribe anytime."
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Alt warm white" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "category": "Email"
+    }
+  ]
+}
+{% endschema %}
