@@ -15,7 +15,7 @@
 
         {%- if form.posted_successfully? -%}
           <p class="newsletter-section__success">
-            {{ section.settings.success_message | default: 'sections.newsletter.success_message' | t }}
+            {{ section.settings.success_message | default: 'Thank you for subscribing.' }}
           </p>
         {%- else -%}
           <div class="newsletter-section__field-group">
@@ -30,7 +30,7 @@
               class="newsletter-section__input"
             >
             <button type="submit" class="btn btn--primary newsletter-section__submit">
-              {{ section.settings.button_label | default: 'sections.newsletter.button_label' | t }}
+              {{ section.settings.button_label | default: 'Subscribe' }}
             </button>
           </div>
           {%- if form.errors -%}

@@ -56,8 +56,8 @@
         href="{{ section.settings.button_url | default: '/collections/all' }}"
         class="btn {% if section.settings.button_style == 'ghost' %}btn--ghost-light{% else %}btn--primary{% endif %} hero-fullscreen__cta"
       >
-        {{ section.settings.button_label }}
-        {% render 'icon', name: 'arrow-right' %}
+        <span>{{ section.settings.button_label }}</span>
+        <span class="btn__icon" aria-hidden="true">{% render 'icon', name: 'arrow-right' %}</span>
       </a>
     {%- endif -%}
   </div>

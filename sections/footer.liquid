@@ -146,7 +146,6 @@
   <div class="site-footer__bottom">
     <div class="site-footer__bottom-inner">
       <p class="site-footer__copyright">
-        {%- assign copyright_text = section.settings.copyright_text | default: 'sections.footer.copyright' | t: year: 'now' | date: '%Y', shop_name: shop.name -%}
         &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.copyright_text | default: 'All rights reserved.' }}
       </p>
       <div class="site-footer__legal-links">

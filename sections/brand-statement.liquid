@@ -5,7 +5,7 @@
     {%- endif -%}
 
     <blockquote class="brand-statement__statement reveal">
-      <p class="brand-statement__text">{{ section.settings.statement | default: 'sections.brand_statement.default_statement' | t }}</p>
+      <p class="brand-statement__text">{{ section.settings.statement | default: 'Every home tells a story. We help you tell yours.' }}</p>
       {%- if section.settings.attribution != blank -%}
         <footer class="brand-statement__attribution">
           <cite>{{ section.settings.attribution }}</cite>

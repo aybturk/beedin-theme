@@ -11,7 +11,7 @@
 >
 
   <div class="cart-drawer__header">
-    <h2 class="cart-drawer__title">{{ section.settings.title | default: 'sections.cart_drawer.title' | t }}</h2>
+    <h2 class="cart-drawer__title">{{ section.settings.title | default: 'Your Cart' }}</h2>
     <button
       class="cart-drawer__close"
       id="cart-drawer-close"
@@ -26,8 +26,8 @@
     {%- if cart.item_count == 0 -%}
       <div class="cart-drawer__empty" id="cart-drawer-empty">
         <div class="cart-drawer__empty-icon">{% render 'icon', name: 'cart' %}</div>
-        <p class="cart-drawer__empty-title">{{ section.settings.empty_title | default: 'sections.cart_drawer.empty' | t }}</p>
-        <p class="cart-drawer__empty-message">{{ section.settings.empty_message | default: 'sections.cart_drawer.empty_message' | t }}</p>
+        <p class="cart-drawer__empty-title">{{ section.settings.empty_title | default: 'Your space is waiting.' }}</p>
+        <p class="cart-drawer__empty-message">{{ section.settings.empty_message | default: 'Add pieces that speak to your home.' }}</p>
         <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary cart-drawer__continue-btn" id="cart-drawer-continue">
           {{ 'sections.cart_drawer.continue_shopping' | t }}
         </a>
